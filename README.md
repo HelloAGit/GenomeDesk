@@ -1,83 +1,94 @@
-# GenomeDesk Backend
+# GenomeDesk
 
-Research-use, API-only genomic variant explorer with optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a small-file VCF prototype, not a deployed clinical product or a FASTQ sequencing pipeline.
+Genomic Sequence Read — A research-use, API-only genomic variant explorer with optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a small-file VCF prototype designed for efficient variant analysis and metadata exploration.
 
-## Included
+## Features
 
-- Uncompressed VCF import using pysam; GRCh37/GRCh38 selection and declared-reference provenance.
-- Persistent SQLite storage, variant filtering/pagination, aggregate chart-ready metrics, deletion.
-- Authenticated API, explicit CORS origins, upload/record limits, temporary input cleanup.
-- Optional real Nebius chat-completion integration. No fabricated AI fallback.
-- Docker Compose, automated tests, GitHub Actions, synthetic fixture, OpenAPI contract.
+- **Uncompressed VCF Import**: Using pysam with GRCh37/GRCh38 selection and declared-reference provenance.
+- **Persistent Storage**: SQLite database with variant filtering, pagination, aggregate metrics, and deletion support.
+- **Secure API**: Authenticated endpoints, explicit CORS origins, configurable upload/record limits, and automatic cleanup of temporary inputs.
+- **Optional AI Integration**: Real Nebius chat-completion integration for variant explanations (no fabricated AI fallback).
+- **DevOps Ready**: Docker Compose, automated test suite, GitHub Actions CI/CD, synthetic test fixtures, and OpenAPI contract documentation.
 
-## Run locally
+## Getting Started
 
-Requires Python 3.11+ (3.12 recommended).
+### Requirements
+
+- Python 3.11+ (3.12 recommended)
+
+### Installation & Setup
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 # Windows PowerShell: .\.venv\Scripts\Activate.ps1
+
 pip install -r requirements-dev.txt
 cp .env.example .env
 # Windows PowerShell: Copy-Item .env.example .env
+```
+
+Generate a secure API key:
+
+```bash
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-Put the generated value in `.env` as `BACKEND_API_KEY`, then:
+Add the generated key to `.env` as `BACKEND_API_KEY`.
+
+### Running Locally
+
+**Option 1: Direct with uvicorn**
 
 ```bash
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Open http://localhost:8000/docs and select **Authorize** to enter your backend key. Upload `examples/synthetic.vcf` with assembly `GRCh38` and a synthetic sample name. `/health` is public; all `/api` endpoints require `X-API-Key`.
+Open http://localhost:8000/docs and select **Authorize** to enter your backend key. Upload `examples/synthetic.vcf` with assembly `GRCh38` and a synthetic sample name. The `/health` endpoint is public; all `/api/*` endpoints require authentication.
 
-Alternatively: `docker compose up --build` after configuring `.env`. The named Docker volume persists imported data. Removing that volume deletes it.
+**Option 2: Docker Compose**
 
-## Where Nebius is required
+```bash
+docker compose up --build
+```
 
-| Location | Required action |
-|---|---|
+The named Docker volume persists imported data across restarts. Remove the volume to reset the database.
+
+## Nebius Token Factory Integration
+
+To enable variant explanations via Nebius:
+
+| Component | Action |
+|-----------|--------|
 | `.env` | Set `NEBIUS_API_KEY` to your Token Factory secret |
 | `.env` | Set `NEBIUS_MODEL` to an exact model ID in your account |
-| `app/nebius.py` | Actual API call, fixed `https://api.tokenfactory.nebius.com/v1/` base URL |
-| `POST /api/samples/{id}/explain` | Only endpoint that requires and calls Nebius |
-| Hosting secret settings | Configure the same variables on the backend host |
+| `app/nebius.py` | Calls `https://api.tokenfactory.nebius.com/v1/` (fixed endpoint) |
+| `POST /api/samples/{id}/explain` | Only endpoint that requires Nebius |
+| Hosting environment | Configure the same environment variables on your backend host |
 
-Create/access your account at https://tokenfactory.nebius.com and consult https://api.tokenfactory.nebius.com/docs. A separate OpenAI account or key is not required: the OpenAI SDK is the compatible client library. Without Nebius credentials, every non-AI endpoint still works; explanation requests return 503. AI output is unverified draft text and includes source metrics for review. Calls can incur provider charges. The repository contains no live key and tests do not call Nebius.
+**Setup**: Create/access your account at https://tokenfactory.nebius.com and consult https://api.tokenfactory.nebius.com/docs. The OpenAI SDK is compatible with the Nebius endpoint; no separate OpenAI account or key is needed.
 
-## Connect another frontend
+## Frontend Integration
 
-See [docs/frontend-integration.md](docs/frontend-integration.md). Configure `CORS_ORIGINS` with your exact frontend origin, including scheme and port. Keep both the Nebius key and the shared backend key in server-side secrets. Use your frontend platform's server functions/proxy to call this API. Do not put shared keys in browser bundles or `NEXT_PUBLIC_` variables.
+See [docs/frontend-integration.md](docs/frontend-integration.md) for detailed frontend setup.
 
-## Create the GitHub repository
+**Key Configuration**: Set `CORS_ORIGINS` with your exact frontend origin (including scheme and port). Protect both the Nebius key and the shared backend API key as secrets.
 
-This package is ready to push; it does not create a remote repository automatically. With GitHub CLI installed and authenticated:
-
-```bash
-git init -b main
-git add .
-git commit -m "Initial GenomeDesk backend prototype"
-gh auth login
-gh repo create genomedesk-backend --private --source=. --remote=origin --push
-```
-
-Or create an empty private repository at https://github.com/new, then:
-
-```bash
-git init -b main
-git add .
-git commit -m "Initial GenomeDesk backend prototype"
-git remote add origin https://github.com/YOUR_USERNAME/genomedesk-backend.git
-git push -u origin main
-```
-
-If the extracted package already has a Git repository, skip `git init`. Never commit `.env`, real genomic data or database files.
-
-## Verify
+## Testing
 
 ```bash
 python -m pytest -q
 ```
 
-See [docs/roadmap.md](docs/roadmap.md) for the FASTQ pipeline and hosting requirements. Dependencies use bounded ranges rather than a reproducible lockfile; resolve and lock a tested environment before a production rollout.
+## Documentation
+
+- **Roadmap & FASTQ Pipeline**: See [docs/roadmap.md](docs/roadmap.md)
+- **Deployment & Hosting**: See hosting requirements in [docs/roadmap.md](docs/roadmap.md)
+
+## Development Notes
+
+Dependencies use bounded version ranges for flexibility. Lock a tested environment before production deployment.
+
+## License
+
+See repository for licensing details.
