@@ -68,3 +68,7 @@ Render null metrics as unavailable, never as zero. INFO/DP is site-level depth, 
 Errors: 401 invalid backend key; 404 missing sample; 413 upload too large; 422 malformed/unsupported input; 503 missing configuration; 502 upstream AI failure. Frontend should show a clear error instead of mock success. Escape all text and sanitise any rendered Markdown.
 
 Only small uncompressed VCF files are supported (default 10 MiB / 50,000 records). BCF, compressed VCF, FASTQ, gene filters and annotations are not implemented.
+
+## Local implementation reference
+
+The `web/` Next.js application demonstrates this contract end to end. See [local reference setup and blueprint](local-reference.md) for startup commands, credential boundaries, screen/state mapping, and tests. Use `web/types/api.ts` for response types and `web/lib/proxy.ts` for the allowlisted server-side bridge. Local mode accepts loopback hosts only. The Render demo mode adds a shared login and exact HTTPS origin checks; see [Render deployment](render-deployment.md). A production multi-user platform needs individual authenticated server functions and workspace authorization.

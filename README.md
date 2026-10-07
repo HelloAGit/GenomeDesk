@@ -1,6 +1,6 @@
 # GenomeDesk
 
-Genomic Sequence Read — A research-use, API-only genomic variant explorer with optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a small-file VCF prototype designed for efficient variant analysis and metadata exploration.
+Genomic Sequence Read — A research-use genomic variant explorer with a FastAPI backend, a local reference web application, and optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a small-file VCF prototype designed for efficient variant analysis and metadata exploration.
 
 ## Features
 
@@ -92,3 +92,23 @@ Dependencies use bounded version ranges for flexibility. Lock a tested environme
 ## License
 
 See repository for licensing details.
+
+## Local reference web application
+
+A complete interactive reference frontend is available in `web/`, built with Next.js, TypeScript, Tailwind CSS, Recharts, and Lucide icons. It connects to the existing FastAPI backend through server-side route handlers, keeping both backend and Nebius credentials out of browser code.
+
+Start the backend as above, then:
+
+```bash
+cd web
+npm ci
+cp .env.example .env.local
+# Set GENOMEDESK_BACKEND_KEY to the backend's BACKEND_API_KEY in .env.local.
+npm run dev
+```
+
+The local site provides an overview, searchable sample library, VCF import (including the synthetic fixture), variant filtering/pagination, QC charts, provenance, optional AI drafts, deletion confirmation, and an API integration guide. It binds to loopback and is intended for local research/demo use. See [local reference setup and blueprint](docs/local-reference.md) for configuration, security boundaries, and tests.
+
+## Public Render demo
+
+A frontend-only Render Blueprint is provided in `render.yaml`. It connects to the existing backend at `https://genomedesk.onrender.com`, adds a shared demo login, and uses a public frontend health check. See [Render deployment instructions](docs/render-deployment.md) for secure settings and publishing.

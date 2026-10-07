@@ -1,0 +1,21 @@
+# Deploy only the frontend; the existing FastAPI service stays unchanged.
+services:
+  - type: web
+    name: genomedesk-web
+    runtime: node
+    plan: free
+    rootDir: web
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run start:render
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: GENOMEDESK_API_URL
+        value: https://genomedesk.onrender.com
+      - key: GENOMEDESK_BACKEND_KEY
+        sync: false
+      - key: GENOMEDESK_DEMO_USER
+        value: researcher
+      - key: GENOMEDESK_DEMO_PASSWORD
+        generateValue: true

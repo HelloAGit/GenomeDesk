@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+*.tsbuildinfo
+playwright-report/
+test-results/
+next-env.d.ts
+# Override the Python root rule that ignores directories named lib.
+!lib/
+!lib/**
