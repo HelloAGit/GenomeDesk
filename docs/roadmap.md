@@ -1,5 +1,7 @@
 # Next integrations
 
+> v2 status: PostgreSQL models/migrations, identity auth, audit, rate limits and a worker process now exist (see architecture.md). Remaining items below (object storage, Celery/Redis, FASTQ, ClinVar, frontend login UI, distributed rate limiting) are still planned.
+
 ## Hosting this prototype
 
 Deploy the Docker image on a service with a persistent writable volume at `/service/data`; use one application instance for this SQLite prototype. Configure `BACKEND_API_KEY`, `CORS_ORIGINS`, `NEBIUS_API_KEY`, and `NEBIUS_MODEL` as backend secrets/environment variables. Terminate TLS at the host ingress. Never use ephemeral storage if imports must survive restarts. Enforce request-body size limits at the reverse proxy as well as application limits: multipart parsing occurs before the endpoint's file-size check.

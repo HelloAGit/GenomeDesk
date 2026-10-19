@@ -8,5 +8,35 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - genome-data:/service/data
+  worker:
+    build: .
+    env_file: .env
+    environment:
+      DATA_DIR: /service/data
+    command: ["python", "-m", "app.workers.worker"]
+    volumes:
+      - genome-data:/service/data
+    depends_on: [api]
+  # Optional: Next.js frontend (server-side proxy keeps BACKEND_API_KEY out of the browser)
+  frontend:
+    build: ./frontend
+    profiles: ["frontend"]
+    environment:
+      GENOMEDESK_API_URL: http://api:8000
+      BACKEND_API_KEY: ${BACKEND_API_KEY:-}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on: [api]
+  # Optional: PostgreSQL (set DATABASE_URL=postgresql+psycopg://genomedesk:<password>@postgres:5432/genomedesk)
+  postgres:
+    image: postgres:16
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_USER: genomedesk
+      POSTGRES_DB: genomedesk
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
 volumes:
   genome-data:
+  pg-data:

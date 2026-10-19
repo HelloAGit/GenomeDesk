@@ -1,4 +1,5 @@
 import json
+
 from openai import AsyncOpenAI
 
 BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
@@ -23,6 +24,22 @@ async def explain(summary: dict, settings) -> str:
                 )},
                 {"role": "user", "content": json.dumps(summary)},
             ],
+        )
+    text = response.choices[0].message.content if response.choices else None
+    if not text:
+        raise ValueError("Empty AI response")
+    return text
+
+
+async def chat(messages: list[dict], settings) -> str:
+    # NEBIUS API INTEGRATION: conversational assistant. Callers must pass only
+    # authorised, privacy-filtered context (aggregate QC unless variant sharing is approved).
+    async with AsyncOpenAI(
+        api_key=settings.nebius_api_key, base_url=BASE_URL,
+        timeout=30.0, max_retries=1,
+    ) as client:
+        response = await client.chat.completions.create(
+            model=settings.nebius_model, max_tokens=900, messages=messages,
         )
     text = response.choices[0].message.content if response.choices else None
     if not text:

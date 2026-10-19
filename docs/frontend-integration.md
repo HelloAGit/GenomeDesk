@@ -1,5 +1,7 @@
 # Frontend and dashboard integration
 
+> v2: a reference Next.js app lives in `frontend/`; see [api.md](api.md) for additional endpoints. The sections below describe the original v0.1 contract, which still applies. `.vcf.gz` is now supported.
+
 The API works with any platform able to make multipart and JSON HTTP requests from server-side code. Host the Python backend separately if your frontend platform cannot run it. Use HTTPS for hosted requests.
 
 ## Endpoints
@@ -67,4 +69,4 @@ Render null metrics as unavailable, never as zero. INFO/DP is site-level depth, 
 
 Errors: 401 invalid backend key; 404 missing sample; 413 upload too large; 422 malformed/unsupported input; 503 missing configuration; 502 upstream AI failure. Frontend should show a clear error instead of mock success. Escape all text and sanitise any rendered Markdown.
 
-Only small uncompressed VCF files are supported (default 10 MiB / 50,000 records). BCF, compressed VCF, FASTQ, gene filters and annotations are not implemented.
+Only small VCF / VCF.gz files are supported (default 10 MiB / 50,000 records). BCF, FASTQ, gene filters and annotations are not implemented.

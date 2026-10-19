@@ -3,9 +3,9 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from app import nebius
 from app.config import Settings
 from app.main import create_app
-from app import nebius
 
 FIXTURE = Path(__file__).parents[1] / "examples" / "synthetic.vcf"
 HEADERS = {"X-API-Key": "test-secret"}
