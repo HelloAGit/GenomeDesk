@@ -97,7 +97,11 @@ def query_variants(session: Session, sample_id: str, chromosome=None, min_qualit
 
 
 def csv_safe(value) -> str:
-    text = "" if value is None else str(value)
+    if value is None:
+        return ""
+    if isinstance(value, int | float) and not isinstance(value, bool):
+        return str(value)  # genuine numbers (including negatives) are not formulas
+    text = str(value)
     return "'" + text if text[:1] in ("=", "+", "-", "@", "\t", "\r") else text
 
 

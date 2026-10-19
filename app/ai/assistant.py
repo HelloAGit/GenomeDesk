@@ -154,10 +154,11 @@ async def respond(session: Session, project_id: str, actor: str, message: str,
         response["status"] = "provider_error"
         response["message"] = "AI provider unavailable; direct measurements are still shown. Retry later."
         return response
+    raw_text = text  # label form is what is replayed to the provider on later turns
     text = re.sub(r"\bsample_(\d+)\b", lambda m: labels.get(m.group(0), m.group(0)), text)
     response["interpretation"] = {"text": text, "model": settings.nebius_model,
                                   "label": "Model-generated interpretation; not a measurement or finding"}
-    session.add(ConversationMessage(conversation_id=conversation.id, role="assistant", content=text))
+    session.add(ConversationMessage(conversation_id=conversation.id, role="assistant", content=raw_text))
     if mode == "summary":
         session.add(ResearchReport(project_id=project_id, sample_id=selected[0] if len(selected) == 1 else None,
                                    created_by=actor if actor != "dev-api-key" else None,

@@ -81,6 +81,7 @@ def test_csv_formula_injection_neutralised():
     from app.services.samples import csv_safe
     assert csv_safe("=HYPERLINK()") == "'=HYPERLINK()"
     assert csv_safe("@x") == "'@x" and csv_safe("+1") == "'+1" and csv_safe("-1") == "'-1"
+    assert csv_safe(-1.5) == "-1.5"
     assert csv_safe("chr1") == "chr1" and csv_safe(None) == ""
 
 

@@ -62,6 +62,7 @@ def test_grounded_answer_privacy_and_followup(tmp_path, monkeypatch):
             "message": "And chromosome counts?", "conversation_id": first["conversation_id"]}).json()
         assert second["sample_ids"] == [sid]  # follow-up keeps sample context
         assert any(m["content"] == "Summarise QC" for m in calls[1])
+        assert not any(sid in m["content"] for m in calls[1][:-1])  # history replays pseudonymous labels only
         assert second["direct_measurements"][0]["metrics"]["records_by_chromosome"] == {"chr1": 2, "chr2": 2}
 
 

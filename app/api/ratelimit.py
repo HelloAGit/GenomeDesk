@@ -26,9 +26,13 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         limit = self.limits[bucket]
         if limit > 0:
             now = time.monotonic()
-            window = self.hits[(request.client.host if request.client else "?", bucket)]
+            key = (request.client.host if request.client else "?", bucket)
+            window = self.hits[key]
             while window and now - window[0] > 60:
                 window.popleft()
+            if len(self.hits) > 10000:  # prune idle clients
+                for stale in [k for k, v in self.hits.items() if not v and k != key]:
+                    del self.hits[stale]
             if len(window) >= limit:
                 return JSONResponse({"detail": "Rate limit exceeded"}, status_code=429,
                                     headers={"Retry-After": "60"})
