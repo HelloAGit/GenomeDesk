@@ -4,9 +4,16 @@ function denied(detail: string, status: number) {
   return Response.json({ detail }, { status, headers: { 'Cache-Control': 'no-store' } });
 }
 export function siteOrigin(): URL | null {
-  const configured = process.env.GENOMEDESK_SITE_URL || process.env.RENDER_EXTERNAL_URL;
+  const vercelHost =
+    process.env.VERCEL_ENV === 'production'
+      ? process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
+      : process.env.VERCEL_URL;
+  const configured =
+    process.env.GENOMEDESK_SITE_URL ||
+    process.env.RENDER_EXTERNAL_URL ||
+    (vercelHost ? `https://${vercelHost}` : undefined);
   if (!configured) {
-    if (process.env.RENDER === 'true') throw new Error('Hosted origin missing');
+    if (process.env.RENDER === 'true' || process.env.VERCEL === '1') throw new Error('Hosted origin missing');
     return null;
   }
   const url = new URL(configured);
