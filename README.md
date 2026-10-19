@@ -112,3 +112,11 @@ The local site provides an overview, searchable sample library, VCF import (incl
 ## Public Render demo
 
 A frontend-only Render Blueprint is provided in `render.yaml`. It connects to the existing backend at `https://genomedesk.onrender.com`, adds a shared demo login, and uses a public frontend health check. See [Render deployment instructions](docs/render-deployment.md) for secure settings and publishing.
+
+## Deploy to Vercel
+
+The Next.js frontend in `web/` can be deployed to Vercel independently of the Python API. Import the repository, set the Vercel project **Root Directory** to `web`, and keep the detected Next.js build settings (`npm run build`, `.next`). The existing Next.js route handlers serve the frontend and proxy `/api/*`; no custom SPA rewrites are needed.
+
+Set `GENOMEDESK_API_URL` to the HTTPS backend origin and `GENOMEDESK_BACKEND_KEY` to the same secret as backend `BACKEND_API_KEY` in Vercel's project environment settings. Both are server-only; never use a `NEXT_PUBLIC_` prefix. `GENOMEDESK_SITE_URL` is only needed for a custom frontend domain. Keep `BACKEND_API_KEY` and any `NEBIUS_API_KEY` exclusively in the backend host's secrets. See [Vercel deployment instructions](docs/vercel-deployment.md) for full setup, environment variables, limits, and verification.
+
+The backend is not deployed to Vercel: it requires persistent writable storage for SQLite. Vercel Functions also limit request bodies to 4.5 MB, so larger VCF uploads through the frontend proxy are not supported. The frontend currently has a shared workspace without browser login; enable Vercel Deployment Protection or equivalent access control before sharing a deployment.

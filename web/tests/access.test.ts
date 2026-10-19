@@ -95,6 +95,28 @@ describe("hosted demo access", () => {
     vi.stubEnv("RENDER_EXTERNAL_URL", "https://genomedesk-web.onrender.com");
     expect(access(request("/", "GET", { Authorization: auth() }))).toBe(null);
   });
+  it("uses the Vercel deployment URL and fails closed when it is missing", () => {
+    vi.stubEnv("GENOMEDESK_SITE_URL", "");
+    vi.stubEnv("RENDER_EXTERNAL_URL", "");
+    vi.stubEnv("RENDER", "");
+    vi.stubEnv("VERCEL", "1");
+    vi.stubEnv("VERCEL_URL", "genomedesk-preview.vercel.app");
+    expect(
+      access(
+        request("/", "GET", {
+          Host: "genomedesk-preview.vercel.app",
+        }),
+      ),
+    ).toBe(null);
+    vi.stubEnv("VERCEL_URL", "");
+    expect(
+      access(
+        request("/", "GET", {
+          Host: "genomedesk-preview.vercel.app",
+        }),
+      )?.status,
+    ).toBe(503);
+  });
   it("does not allow a forged host to bypass login", () => {
     hosted();
     expect(
