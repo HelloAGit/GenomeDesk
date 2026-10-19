@@ -17,12 +17,12 @@ You need a Vercel account connected to this repository and a running backend wit
 | --- | --- | --- |
 | `GENOMEDESK_API_URL` | Yes | Backend origin, for example `https://your-backend.example` (no path). |
 | `GENOMEDESK_BACKEND_KEY` | Yes | The same secret value as the backend's `BACKEND_API_KEY`. Mark it sensitive; never use a `NEXT_PUBLIC_` prefix. |
-| `GENOMEDESK_SITE_URL` | Only for a custom domain | The exact HTTPS origin users visit, such as `https://genomedesk.example.com`, with no path. The app uses Vercel's `VERCEL_URL` for the default deployment hostname. |
+| `GENOMEDESK_SITE_URL` | Only for a custom domain or alias not covered by Vercel's system URLs | The exact HTTPS origin users visit, such as `https://genomedesk.example.com`, with no path. The app uses `VERCEL_PROJECT_PRODUCTION_URL` for the production alias and `VERCEL_URL` for preview deployments. |
 | `GENOMEDESK_MAX_BODY_BYTES` | Optional | Maximum proxied multipart request size. For Vercel, keep it at or below `4194304` bytes. |
 
 Set `BACKEND_API_KEY` only in the backend host's secret settings. If AI explanations are enabled, configure `NEBIUS_API_KEY` and `NEBIUS_MODEL` on the backend only. Do not add either backend secret to browser-visible variables. There is no need to configure `CORS_ORIGINS` for this server-to-server proxy.
 
-The Vercel deployment URL is used for origin checks automatically. Set `GENOMEDESK_SITE_URL` when serving the app from a custom domain so host and same-origin mutation checks match that domain.
+Vercel's system environment variables must be enabled for the project. The production project URL or preview deployment URL is used for origin checks automatically. Set `GENOMEDESK_SITE_URL` when serving the app from a custom domain or alias not covered by those URLs so host and same-origin mutation checks match that domain.
 
 ## Deployment constraints and access
 

@@ -117,6 +117,22 @@ describe("hosted demo access", () => {
       )?.status,
     ).toBe(503);
   });
+  it("uses the Vercel production project URL for the production alias", () => {
+    vi.stubEnv("GENOMEDESK_SITE_URL", "");
+    vi.stubEnv("RENDER_EXTERNAL_URL", "");
+    vi.stubEnv("RENDER", "");
+    vi.stubEnv("VERCEL", "1");
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("VERCEL_URL", "genomedesk-deployment.vercel.app");
+    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "genomedesk.vercel.app");
+    expect(
+      access(
+        request("/", "GET", {
+          Host: "genomedesk.vercel.app",
+        }),
+      ),
+    ).toBe(null);
+  });
   it("does not allow a forged host to bypass login", () => {
     hosted();
     expect(
