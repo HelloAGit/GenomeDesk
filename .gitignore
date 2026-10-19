@@ -53,3 +53,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.log
+
+# Local data
+data/
+*.sqlite3
+.ruff_cache/
+.pytest_cache/
