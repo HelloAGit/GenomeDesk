@@ -1,6 +1,6 @@
 # GenomeDesk
 
-Genomic Sequence Read — A research-use, API-only genomic variant explorer with optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a small backend-focused service intended for controlled deployments and local research workflows.
+Genomic Sequence Read — A research-use, API-only genomic variant explorer with optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a sma[...]
 
 ## Features
 
@@ -44,7 +44,7 @@ Add the generated key to `.env` as `BACKEND_API_KEY`.
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Open http://localhost:8000/docs and select **Authorize** to enter your backend key. Upload `examples/synthetic.vcf` with assembly `GRCh38` and a synthetic sample name. The `/health` endpoint is public for monitoring.
+Open http://localhost:8000/docs and select **Authorize** to enter your backend key. Upload `examples/synthetic.vcf` with assembly `GRCh38` and a synthetic sample name. The `/health` endpoint is pu[...]
 
 **Option 2: Docker Compose**
 
@@ -66,7 +66,9 @@ To enable variant explanations via Nebius:
 | `POST /api/samples/{id}/explain` | Only endpoint that requires Nebius |
 | Hosting environment | Configure the same environment variables on your backend host |
 
-**Setup**: Create/access your account at https://tokenfactory.nebius.com and consult https://api.tokenfactory.nebius.com/docs. The OpenAI SDK is compatible with the Nebius endpoint; no separate OpenAI key is needed for this integration.
+**Recommended model**: Set `NEBIUS_MODEL=Nemotron-3-Ultra-550b-a55b` to use the Nemotron-3-Ultra-550b-a55b model for explanation generation.
+
+**Setup**: Create/access your account at https://tokenfactory.nebius.com and consult https://api.tokenfactory.nebius.com/docs. The OpenAI SDK is compatible with the Nebius endpoint; no separate Op[...]
 
 ## Frontend Integration
 
