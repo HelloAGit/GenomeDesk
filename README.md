@@ -1,6 +1,6 @@
 # GenomeDesk
 
-Genomic Sequence Read — A research-use, API-only genomic variant explorer with optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a small-file VCF prototype designed for efficient variant analysis and metadata exploration.
+Genomic Sequence Read — A research-use, API-only genomic variant explorer with optional Nebius Token Factory explanations. Connect your own frontend/dashboard platform through REST. This is a small backend-focused service intended for controlled deployments and local research workflows.
 
 ## Features
 
@@ -44,7 +44,7 @@ Add the generated key to `.env` as `BACKEND_API_KEY`.
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Open http://localhost:8000/docs and select **Authorize** to enter your backend key. Upload `examples/synthetic.vcf` with assembly `GRCh38` and a synthetic sample name. The `/health` endpoint is public; all `/api/*` endpoints require authentication.
+Open http://localhost:8000/docs and select **Authorize** to enter your backend key. Upload `examples/synthetic.vcf` with assembly `GRCh38` and a synthetic sample name. The `/health` endpoint is public for monitoring.
 
 **Option 2: Docker Compose**
 
@@ -66,13 +66,15 @@ To enable variant explanations via Nebius:
 | `POST /api/samples/{id}/explain` | Only endpoint that requires Nebius |
 | Hosting environment | Configure the same environment variables on your backend host |
 
-**Setup**: Create/access your account at https://tokenfactory.nebius.com and consult https://api.tokenfactory.nebius.com/docs. The OpenAI SDK is compatible with the Nebius endpoint; no separate OpenAI account or key is needed.
+**Setup**: Create/access your account at https://tokenfactory.nebius.com and consult https://api.tokenfactory.nebius.com/docs. The OpenAI SDK is compatible with the Nebius endpoint; no separate OpenAI key is needed for this integration.
 
 ## Frontend Integration
 
 See [docs/frontend-integration.md](docs/frontend-integration.md) for detailed frontend setup.
 
 **Key Configuration**: Set `CORS_ORIGINS` with your exact frontend origin (including scheme and port). Protect both the Nebius key and the shared backend API key as secrets.
+
+**Deployed site**: https://genomedesk-1.ai.studio/
 
 ## Testing
 
