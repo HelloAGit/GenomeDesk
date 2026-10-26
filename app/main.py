@@ -9,6 +9,7 @@ from uuid import uuid4
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
+from fastapi.responses import RedirectResponse
 from openai import APIError
 from starlette.concurrency import run_in_threadpool
 
@@ -43,6 +44,10 @@ def create_app(settings=None):
 
     def metadata(sample):
         return {k: v for k, v in sample.items() if k != "records"}
+
+    @app.get("/", include_in_schema=False)
+    def homepage():
+        return RedirectResponse(url="/docs")
 
     @app.get("/health")
     def health():

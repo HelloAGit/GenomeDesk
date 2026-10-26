@@ -28,6 +28,15 @@ def upload(client, data=None, assembly="GRCh38"):
                        files={"file": ("synthetic.vcf", data or FIXTURE.read_bytes(), "text/plain")})
 
 
+def test_homepage_redirects_to_docs(client):
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code == 307
+    assert response.headers["location"] == "/docs"
+    docs = client.get(response.headers["location"])
+    assert docs.status_code == 200
+    assert "GenomeDesk Backend" in docs.text
+
+
 def test_authentication(client):
     assert client.get("/health").status_code == 200
     assert client.get("/api/samples").status_code == 401
